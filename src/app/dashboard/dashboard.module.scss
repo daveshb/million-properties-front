@@ -1,0 +1,163 @@
+
+.dashboard {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #f8f9fb;
+  color: #333;
+  min-height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.topbar__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.brand {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userPill {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.userPill__email {
+  margin-right: 0.5rem;
+}
+
+.userPill__role {
+  color: #888;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.btnPrimary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btnPrimary:hover {
+  background: #1e4fc7;
+}
+
+.btnSecondary {
+  background: #e5e7eb;
+  color: #333;
+}
+
+.btnSecondary:hover {
+  background: #d1d5db;
+}
+
+.btnGhost {
+  background: transparent;
+  border: 1px solid #d1d5db;
+}
+
+.btnGhost:hover {
+  background: #f3f4f6;
+}
+
+.btnLink {
+  background: none;
+  color: #2563eb;
+  padding: 0;
+  border: none;
+}
+
+.btnLink:hover {
+  text-decoration: underline;
+}
+
+.pageTitle {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.filtersCard {
+  margin-bottom: 1.5rem;
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.filtersActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.alert {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.alertError {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
