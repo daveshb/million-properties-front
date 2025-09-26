@@ -4,13 +4,18 @@ import { useEffect, useState } from "react";
 import style from "./dashboard.module.scss";
 import { getProperties } from "@/services/propertiesService";
 import { PropertyCard } from "@/components/propertyCard/PropertyCard";
+import { useRouter } from "next/navigation";
 
 type Props = {
   address: string;
+  codeInternal: string;
   id: string;
+  idOwner: number;
+  idProperty: number;
   img: string;
   name: string;
   price: number;
+  year: number;
 };
 
 const Dashboard = () => {
@@ -19,6 +24,8 @@ const Dashboard = () => {
   const [address, setAddress] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  const router = useRouter();
 
   const handleFetchProperties = async (name: string, address: string, minPrice: string, maxPrice: string) => {
     try {
@@ -49,6 +56,11 @@ const Dashboard = () => {
     setMaxPrice(value);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };    
+
   useEffect(() => {
     handleFetchProperties(name, address, minPrice, maxPrice);
   }, [name, address, minPrice, maxPrice]);
@@ -61,6 +73,8 @@ const Dashboard = () => {
     handleFetchProperties("", "", "", "");
   };
 
+  console.log(filteredProperties)
+
   return (
     <div className={style.dashboard}>
       <header className={style.topbar}>
@@ -72,7 +86,7 @@ const Dashboard = () => {
               <span className={style.userPill__email}>user@demo.com</span>
               <span className={style.userPill__role}>(user)</span>
             </span>
-            <button className={`${style.btn} ${style.btnGhost}`}>Logout</button>
+            <button onClick={handleLogout} className={`${style.btn} ${style.btnGhost}`}>Logout</button>
           </div>
         </div>
       </header>

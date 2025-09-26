@@ -10,6 +10,11 @@ async function getProperties(name: string, address?: string, minPrice?: string, 
   return response.data;
 }
 
-export { getProperties };
+async function getPropertyById(id: string) {
+  const response = await axios.get(`${API_URL}/properties/${id}`);
+  return response.data;
+}
+
+export { getProperties, getPropertyById };
 
 

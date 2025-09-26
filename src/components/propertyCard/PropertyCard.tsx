@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import style from './propertyCard.module.scss'
 
 type PropertyCardProps = {
@@ -60,7 +61,9 @@ export const PropertyCard = (props: PropertyCardProps) => {
         </div>
 
         <div className={style.propertyCard__actions}>
-          <button className={`${style.btn} ${style.btnLink}`}>View Details</button>
+          <Link href={`/properties/${props.id}`} className={`${style.btn} ${style.btnLink}`} aria-label={`View details for ${props.name}`}>
+            View Details
+          </Link>
         </div>
       </div>
     </article>
