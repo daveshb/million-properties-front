@@ -16,10 +16,13 @@ type Props = {
 const Dashboard = () => {
   const [filteredProperties, setFilteredProperties] = useState<Props[]>([]);
   const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
-  const handleFetchProperties = async (name: string) => {
+  const handleFetchProperties = async (name: string, address: string, minPrice: string, maxPrice: string) => {
     try {
-      const data = await getProperties(name);
+      const data = await getProperties(name, address, minPrice, maxPrice);
       setFilteredProperties(data);
     } catch (error) {
       console.error("Error fetching properties:", error);
@@ -31,9 +34,32 @@ const Dashboard = () => {
     setName(value);
   };
 
+  const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAddress(value);
+  };
+
+  const handleMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMinPrice(value);
+  };
+
+  const handleMaxPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMaxPrice(value);
+  };
+
   useEffect(() => {
-    handleFetchProperties(name);
-  }, [name]);
+    handleFetchProperties(name, address, minPrice, maxPrice);
+  }, [name, address, minPrice, maxPrice]);
+
+  const handleReset = () => {
+    setName("");
+    setAddress("");
+    setMinPrice("");
+    setMaxPrice("");
+    handleFetchProperties("", "", "", "");
+  };
 
   return (
     <div className={style.dashboard}>
@@ -64,6 +90,7 @@ const Dashboard = () => {
                 placeholder="Search by name..."
                 className={style.input}
                 onChange={handleName}
+                value={name}
               />
             </div>
 
@@ -74,6 +101,8 @@ const Dashboard = () => {
                 type="text"
                 placeholder="Search by address..."
                 className={style.input}
+                onChange={handleAddress}
+                value={address}
               />
             </div>
 
@@ -85,6 +114,8 @@ const Dashboard = () => {
                 placeholder="Min price..."
                 className={style.input}
                 min={0}
+                onChange={handleMinPrice}
+                value={minPrice}
               />
             </div>
 
@@ -96,6 +127,8 @@ const Dashboard = () => {
                 placeholder="Max price..."
                 className={style.input}
                 min={0}
+                onChange={handleMaxPrice}
+                value={maxPrice}
               />
             </div>
           </div>
@@ -104,7 +137,7 @@ const Dashboard = () => {
             <button className={`${style.btn} ${style.btnPrimary}`}>
               Apply Filters
             </button>
-            <button className={`${style.btn} ${style.btnSecondary}`}>
+            <button onClick={handleReset} className={`${style.btn} ${style.btnSecondary}`}>
               Clear Filters
             </button>
           </div>
