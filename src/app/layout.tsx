@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel } from "next/font/google";
+import { ChatbotProvider } from "../components/chatbot/ChatbotProvider";
 import "./globals.css";
 
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body
         className={`${cinzel.variable} antialiased`}
       >
-        {children}
+        <ChatbotProvider>
+          {children}
+        </ChatbotProvider>
       </body>
     </html>
   );
