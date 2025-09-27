@@ -3,11 +3,13 @@
 import { memo, useMemo } from "react";
 import style from "./dashboard.module.scss";
 import { PropertyCard } from "@/components/propertyCard/PropertyCard";
+import { Pagination } from "@/components/pagination/Pagination";
 import { useDashboard } from "./useDashboard";
 
 const Dashboard = memo(() => {
   const {
     filteredProperties,
+    pagination,
     name,
     address,
     minPrice,
@@ -17,6 +19,7 @@ const Dashboard = memo(() => {
     handleAddress,
     handleMinPrice,
     handleMaxPrice,
+    handlePageChange,
     handleLogout,
     handleReset,
   } = useDashboard();
@@ -126,6 +129,14 @@ const Dashboard = memo(() => {
         <section className={style.grid}>
           {propertiesList}
         </section>
+
+        <Pagination
+          currentPage={pagination.pageNumber}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalCount}
+          itemsPerPage={pagination.pageSize}
+          onPageChange={handlePageChange}
+        />
       </main>
     </div>
   );
