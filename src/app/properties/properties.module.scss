@@ -26,6 +26,7 @@
 .brand {
   font-size: 1.3rem;
   font-weight: 600;
+  font-family: var(--font-cinzel), serif;
 }
 
 .topbar__right {
@@ -60,6 +61,7 @@
   font-size: 1.6rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
+  font-family: var(--font-cinzel), serif;
 }
 
 .card {
@@ -195,7 +197,7 @@
   background: #f8f9fb;
   border-radius: 8px;
   padding: 1rem;
-  border-left: 4px solid #2563eb;
+  border-left: 4px solid #d1ac3e;
 }
 
 .traceHeader {

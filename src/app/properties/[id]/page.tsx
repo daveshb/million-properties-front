@@ -1,66 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getPropertyById } from "@/services/propertiesService";
+import Image from "next/image";
 import styles from "../properties.module.scss";
-
-type PropertyTrace = {
-  id: string;
-  idProperty: number;
-  dateSale: string;
-  name: string;
-  value: number;
-  tax: number;
-};
-
-type Owner = {
-  id: string;
-  idOwner: number;
-  name: string;
-  email: string | null;
-  phone: string | null;
-};
-
-type Property = {
-  id: string;
-  name: string;
-  address: string;
-  img: string;
-  price: number;
-  idProperty: number;
-  codeInternal: string;
-  year: number;
-  idOwner: number;
-  owner: Owner;
-  propertyTraces: PropertyTrace[];
-};
+import { usePropertyDetail } from "../usePropertyDetail";
 
 export default function PropertyDetailPage() {
-  const params = useParams<{ id: string }>();
-  const router = useRouter();
-  const { id } = params;
-
-  const [property, setProperty] = useState<Property | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProperty = async () => {
-      try {
-        setLoading(true);
-        const data = await getPropertyById(id);
-        setProperty(data);
-        setError(null);
-      } catch (err) {
-        setError("Could not load the property details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchProperty();
-  }, [id]);
+  const {
+    property,
+    loading,
+    error,
+    handleGoBack,
+  } = usePropertyDetail();
 
   if (loading) {
     return (
@@ -84,7 +34,7 @@ export default function PropertyDetailPage() {
         <div className={`${styles.container} ${styles.topbar__inner}`}>
           <h1 className={styles.brand}>Property Detail</h1>
           <div className={styles.topbar__right}>
-            <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => router.back()}>
+            <button className={`${styles.btn} ${styles.btnGhost}`} onClick={handleGoBack}>
               Back
             </button>
           </div>
@@ -95,7 +45,7 @@ export default function PropertyDetailPage() {
         <section className={styles.card}>
           <div className={styles.propertyDetail}>
             <div>
-              <img src={property.img} alt={property.name} className={styles.propertyImage} />
+              <Image src={property.img} alt={property.name} className={styles.propertyImage} width={500} height={300} />
             </div>
             <div className={styles.propertyInfo}>
               <h2 className={styles.pageTitle}>{property.name}</h2>

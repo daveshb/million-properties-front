@@ -27,6 +27,7 @@
 .brand {
   font-size: 1.3rem;
   font-weight: 600;
+  font-family: var(--font-cinzel), serif;
 }
 
 .topbar__right {
@@ -58,12 +59,12 @@
 }
 
 .btnPrimary {
-  background: #2563eb;
+  background: #d1ac3e;
   color: #fff;
 }
 
 .btnPrimary:hover {
-  background: #1e4fc7;
+  background: #c29730;
 }
 
 .btnSecondary {
@@ -99,6 +100,7 @@
   font-size: 1.6rem;
   font-weight: 600;
   margin: 2rem 0 1rem;
+  font-family: var(--font-cinzel), serif;
 }
 
 .card {
