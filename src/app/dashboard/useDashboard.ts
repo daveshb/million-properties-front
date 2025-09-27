@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getProperties } from "@/services/propertiesService";
 
@@ -44,39 +44,40 @@ export const useDashboard = () => {
     return () => clearTimeout(timeoutId);
   }, [name, address, minPrice, maxPrice, handleFetchProperties]);
 
-  const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setName(value);
-  };
+  }, []);
 
-  const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setAddress(value);
-  };
+  }, []);
 
-  const handleMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMinPrice = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMinPrice(value);
-  };
+  }, []);
 
-  const handleMaxPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMaxPrice = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMaxPrice(value);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     router.push("/");
-  };
+  }, [router]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setName("");
     setAddress("");
     setMinPrice("");
     setMaxPrice("");
-  };
+  }, []);
 
-  return {
+  // Memoize the return object to prevent unnecessary re-renders
+  return useMemo(() => ({
     filteredProperties,
     name,
     address,
@@ -90,5 +91,18 @@ export const useDashboard = () => {
     handleMaxPrice,
     handleLogout,
     handleReset,
-  };
+  }), [
+    filteredProperties,
+    name,
+    address,
+    minPrice,
+    maxPrice,
+    loading,
+    handleName,
+    handleAddress,
+    handleMinPrice,
+    handleMaxPrice,
+    handleLogout,
+    handleReset,
+  ]);
 };

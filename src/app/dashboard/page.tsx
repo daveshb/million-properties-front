@@ -1,10 +1,11 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import style from "./dashboard.module.scss";
 import { PropertyCard } from "@/components/propertyCard/PropertyCard";
 import { useDashboard } from "./useDashboard";
 
-const Dashboard = () => {
+const Dashboard = memo(() => {
   const {
     filteredProperties,
     name,
@@ -19,6 +20,20 @@ const Dashboard = () => {
     handleLogout,
     handleReset,
   } = useDashboard();
+
+  // Memoize the properties list to prevent unnecessary re-renders
+  const propertiesList = useMemo(() => {
+    return filteredProperties.map((p) => (
+      <PropertyCard
+        key={p.id}
+        id={p.id}
+        name={p.name}
+        address={p.address}
+        img={p.img}
+        price={p.price}
+      />
+    ));
+  }, [filteredProperties]);
 
   return (
     <div className={style.dashboard}>
@@ -109,20 +124,14 @@ const Dashboard = () => {
         )}
         
         <section className={style.grid}>
-          {filteredProperties.map((p) => (
-            <PropertyCard
-              key={p.id}
-              id={p.id}
-              name={p.name}
-              address={p.address}
-              img={p.img}
-              price={p.price}
-            />
-          ))}
+          {propertiesList}
         </section>
       </main>
     </div>
   );
-};
+});
+
+Dashboard.displayName = 'Dashboard';
+
 
 export default Dashboard;
