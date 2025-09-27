@@ -1,4 +1,3 @@
-/* ====== Property Card Component ====== */
 .propertyCard {
   background: #fff;
   border-radius: 12px;
@@ -51,7 +50,8 @@
 .propertyCard__title {
   font-size: 1.1rem;
   font-weight: 600;
-}
+  font-family: var(--font-cinzel), serif;
+} 
 
 .propertyCard__meta {
   display: flex;
@@ -105,9 +105,9 @@
 }
 
 .btnLink {
-  background: none;
-  color: #2563eb;
-  padding: 0;
+  background: #f3eece;
+  padding: 4px; 
+  color: #a97928;
   border: none;
 }
 

@@ -1,85 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import style from "./dashboard.module.scss";
-import { getProperties } from "@/services/propertiesService";
 import { PropertyCard } from "@/components/propertyCard/PropertyCard";
-import { useRouter } from "next/navigation";
-
-type Props = {
-  address: string;
-  codeInternal: string;
-  id: string;
-  idOwner: number;
-  idProperty: number;
-  img: string;
-  name: string;
-  price: number;
-  year: number;
-};
+import { useDashboard } from "./useDashboard";
 
 const Dashboard = () => {
-  const [filteredProperties, setFilteredProperties] = useState<Props[]>([]);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-
-  const router = useRouter();
-
-  const handleFetchProperties = async (name: string, address: string, minPrice: string, maxPrice: string) => {
-    try {
-      const data = await getProperties(name, address, minPrice, maxPrice);
-      setFilteredProperties(data);
-    } catch (error) {
-      console.error("Error fetching properties:", error);
-    }
-  };
-
-  const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setName(value);
-  };
-
-  const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setAddress(value);
-  };
-
-  const handleMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setMinPrice(value);
-  };
-
-  const handleMaxPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setMaxPrice(value);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/");
-  };    
-
-  useEffect(() => {
-    handleFetchProperties(name, address, minPrice, maxPrice);
-  }, [name, address, minPrice, maxPrice]);
-
-  const handleReset = () => {
-    setName("");
-    setAddress("");
-    setMinPrice("");
-    setMaxPrice("");
-    handleFetchProperties("", "", "", "");
-  };
-
-  console.log(filteredProperties)
+  const {
+    filteredProperties,
+    name,
+    address,
+    minPrice,
+    maxPrice,
+    loading,
+    handleName,
+    handleAddress,
+    handleMinPrice,
+    handleMaxPrice,
+    handleLogout,
+    handleReset,
+  } = useDashboard();
 
   return (
     <div className={style.dashboard}>
       <header className={style.topbar}>
         <div className={`${style.container} ${style.topbar__inner}`}>
-          <h1 className={style.brand}>Elite Properties</h1>
+          <h1 className={style.brand}>Million Properties</h1>
 
           <div className={style.topbar__right}>
             <span className={style.userPill}>
@@ -157,6 +102,12 @@ const Dashboard = () => {
           </div>
         </section>
 
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            Loading properties...
+          </div>
+        )}
+        
         <section className={style.grid}>
           {filteredProperties.map((p) => (
             <PropertyCard

@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import style from './propertyCard.module.scss'
+import Image from 'next/image'
 
 type PropertyCardProps = {
     address: string,
@@ -20,7 +21,7 @@ export const PropertyCard = (props: PropertyCardProps) => {
   return (
     <article className={style.propertyCard}>
       <div className={style.propertyCard__media}>
-        <img src={props.img} alt={props.name} />
+        <Image src={props.img} alt={props.name} width={500} height={300} />
         {props.status && <span className={style.badge}>{props.status}</span>}
         {props.daysAgo && <span className={style.chip}>{props.daysAgo} days ago</span>}
       </div>
