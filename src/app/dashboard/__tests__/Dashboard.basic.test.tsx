@@ -32,6 +32,9 @@ jest.mock('../useDashboard', () => ({
     handlePageChange: jest.fn(),
     handleLogout: jest.fn(),
     handleReset: jest.fn(),
+    handleRetry: jest.fn(),
+    error: null,
+    isRetrying: false,
   })
 }))
 

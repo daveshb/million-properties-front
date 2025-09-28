@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getProperties } from "../../services/propertiesService";
 import { PaginatedResponse, Property } from "@/types/propertiesTypes";
+import { ApiError } from "@/types/errorTypes";
+import { useRetry } from "@/hooks/useRetry";
+import { propertiesErrorHandler } from "@/utils/errorHandler";
 
 export const useDashboard = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
@@ -16,8 +19,15 @@ export const useDashboard = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
 
   const router = useRouter();
+  
+  const { executeWithRetry, isRetrying } = useRetry({
+    maxRetries: 3,
+    shouldRetry: propertiesErrorHandler.shouldRetry,
+    getRetryDelay: propertiesErrorHandler.getRetryDelay
+  });
 
   const handleFetchProperties = useCallback(async (
     name: string, 
@@ -28,13 +38,21 @@ export const useDashboard = () => {
   ) => {
     try {
       setLoading(true);
-      const data: PaginatedResponse = await getProperties({
-        name,
-        address,
-        minPrice,
-        maxPrice,
-        page
-      });
+      setError(null);
+      
+      const data: PaginatedResponse = await executeWithRetry(
+        () => getProperties({
+          name,
+          address,
+          minPrice,
+          maxPrice,
+          page
+        }),
+        (apiError) => {
+          setError(apiError);
+        }
+      );
+      
       setFilteredProperties(data.items);
       setPagination({
         totalCount: data.totalCount,
@@ -47,7 +65,7 @@ export const useDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [executeWithRetry]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -91,7 +109,13 @@ export const useDashboard = () => {
     setAddress("");
     setMinPrice("");
     setMaxPrice("");
+    setError(null);
   }, []);
+
+  const handleRetry = useCallback(() => {
+    setError(null);
+    handleFetchProperties(name, address, minPrice, maxPrice, pagination.pageNumber);
+  }, [name, address, minPrice, maxPrice, pagination.pageNumber, handleFetchProperties]);
 
   // Memoize the return object to prevent unnecessary re-renders
   return useMemo(() => ({
@@ -102,6 +126,8 @@ export const useDashboard = () => {
     minPrice,
     maxPrice,
     loading,
+    error,
+    isRetrying,
     
     handleName,
     handleAddress,
@@ -110,6 +136,7 @@ export const useDashboard = () => {
     handlePageChange,
     handleLogout,
     handleReset,
+    handleRetry,
   }), [
     filteredProperties,
     pagination,
@@ -118,6 +145,8 @@ export const useDashboard = () => {
     minPrice,
     maxPrice,
     loading,
+    error,
+    isRetrying,
     handleName,
     handleAddress,
     handleMinPrice,
@@ -125,5 +154,6 @@ export const useDashboard = () => {
     handlePageChange,
     handleLogout,
     handleReset,
+    handleRetry,
   ]);
 };

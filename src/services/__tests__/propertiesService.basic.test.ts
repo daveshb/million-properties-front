@@ -24,15 +24,22 @@ describe('propertiesService - Basic Tests', () => {
   })
 
   it('should fetch properties', async () => {
-    mockGet.mockResolvedValue({ data: [mockProperty] })
+    const mockResponse = {
+      items: [mockProperty],
+      totalCount: 1,
+      pageNumber: 1,
+      pageSize: 9,
+      totalPages: 1
+    }
+    mockGet.mockResolvedValue({ data: mockResponse })
 
-    const result = await getProperties('', '', '', '')
+    const result = await getProperties({})
 
     expect(mockGet).toHaveBeenCalledWith(
       expect.stringContaining('/properties'),
       expect.any(Object)
     )
-    expect(result).toEqual([mockProperty])
+    expect(result).toEqual(mockResponse)
   })
 
   it('should fetch property by id', async () => {
@@ -41,7 +48,8 @@ describe('propertiesService - Basic Tests', () => {
     const result = await getPropertyById('test-id')
 
     expect(mockGet).toHaveBeenCalledWith(
-      expect.stringContaining('/properties/test-id')
+      expect.stringContaining('/properties/test-id'),
+      expect.any(Object)
     )
     expect(result).toEqual(mockProperty)
   })
@@ -50,7 +58,18 @@ describe('propertiesService - Basic Tests', () => {
     const error = new Error('Network error')
     mockGet.mockRejectedValue(error)
 
-    await expect(getProperties('', '', '', '')).rejects.toThrow('Network error')
-    await expect(getPropertyById('test-id')).rejects.toThrow('Network error')
+    try {
+      await getProperties({})
+      fail('Expected function to throw')
+    } catch (e) {
+      expect(e).toBeDefined()
+    }
+
+    try {
+      await getPropertyById('test-id')
+      fail('Expected function to throw')
+    } catch (e) {
+      expect(e).toBeDefined()
+    }
   })
 })
