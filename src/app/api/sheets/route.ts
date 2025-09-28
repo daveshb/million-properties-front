@@ -34,11 +34,13 @@ export async function POST(request: NextRequest) {
     }
 
     const currentDate = new Date().toISOString().split('T')[0];
+    const cleanedTel = leadData.tel.replace(/[+\s]+/g, '');
+
     const rowData = [
       currentDate,
       leadData.fullName,
       leadData.email,
-      leadData.tel.trim(),
+      cleanedTel,
       leadData.budget
     ];
 
