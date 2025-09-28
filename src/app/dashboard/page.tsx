@@ -124,12 +124,6 @@ const Dashboard = memo(() => {
           </div>
         </section>
 
-        <ErrorAlert
-          error={error}
-          onRetry={handleRetry}
-          isRetrying={isRetrying}
-        />
-
         {loading && (
           <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
             {isRetrying ? 'Reintentando...' : 'Loading properties...'}

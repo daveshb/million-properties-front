@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { getProperties } from "../../services/propertiesService";
 import { PaginatedResponse, Property } from "@/types/propertiesTypes";
 import { ApiError } from "@/types/errorTypes";
 import { useRetry } from "@/hooks/useRetry";
 import { propertiesErrorHandler } from "@/utils/errorHandler";
+import { ContextApp } from "@/context/Context";
 
 export const useDashboard = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
@@ -14,12 +15,10 @@ export const useDashboard = () => {
     pageSize: 9,
     totalPages: 0
   });
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
+  
+  const {name, setName, address, setAddress,  minPrice, setMinPrice, maxPrice, setMaxPrice} = useContext(ContextApp);
 
   const router = useRouter();
   
