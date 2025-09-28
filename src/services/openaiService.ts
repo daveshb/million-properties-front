@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
@@ -113,16 +115,17 @@ export async function sendMessage(messages: ChatMessage[]): Promise<string> {
   }
 }
 
-// Función para guardar lead
 export async function saveLead(leadData: LeadData): Promise<boolean> {
-  try {
-    // Aquí puedes integrar con tu API backend para guardar el lead
-    // Por ahora, simulamos el guardado
-    console.log('Lead capturado:', leadData)
-    
-    // Simular llamada a API
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+  try { 
+    const response = await axios.post('/api/sheets', {
+      fullName: leadData.name,
+      email: leadData.email,
+      tel: leadData.phone,
+      budget: leadData.budget,
+      message: leadData.message
+    })
+
+    console.log('Lead guardado exitosamente:', response.data)
     return true
   } catch (error) {
     console.error('Error saving lead:', error)

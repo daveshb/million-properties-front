@@ -1,44 +1,74 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { getProperties } from "@/services/propertiesService";
-
-type Props = {
-  address: string;
-  codeInternal: string;
-  id: string;
-  idOwner: number;
-  idProperty: number;
-  img: string;
-  name: string;
-  price: number;
-  year: number;
-};
+import { getProperties } from "../../services/propertiesService";
+import { PaginatedResponse, Property } from "@/types/propertiesTypes";
+import { ApiError } from "@/types/errorTypes";
+import { useRetry } from "@/hooks/useRetry";
+import { propertiesErrorHandler } from "@/utils/errorHandler";
+import { ContextApp } from "@/context/Context";
 
 export const useDashboard = () => {
-  const [filteredProperties, setFilteredProperties] = useState<Props[]>([]);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [pagination, setPagination] = useState({
+    totalCount: 0,
+    pageNumber: 1,
+    pageSize: 9,
+    totalPages: 0
+  });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  
+  const {name, setName, address, setAddress,  minPrice, setMinPrice, maxPrice, setMaxPrice} = useContext(ContextApp);
 
   const router = useRouter();
+  
+  const { executeWithRetry, isRetrying } = useRetry({
+    maxRetries: 3,
+    shouldRetry: propertiesErrorHandler.shouldRetry,
+    getRetryDelay: propertiesErrorHandler.getRetryDelay
+  });
 
-  const handleFetchProperties = useCallback(async (name: string, address: string, minPrice: string, maxPrice: string) => {
+  const handleFetchProperties = useCallback(async (
+    name: string, 
+    address: string, 
+    minPrice: string, 
+    maxPrice: string,
+    page: number = 1
+  ) => {
     try {
       setLoading(true);
-      const data = await getProperties(name, address, minPrice, maxPrice);
-      setFilteredProperties(data);
+      setError(null);
+      
+      const data: PaginatedResponse = await executeWithRetry(
+        () => getProperties({
+          name,
+          address,
+          minPrice,
+          maxPrice,
+          page
+        }),
+        (apiError) => {
+          setError(apiError);
+        }
+      );
+      
+      setFilteredProperties(data.items);
+      setPagination({
+        totalCount: data.totalCount,
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+        totalPages: data.totalPages
+      });
     } catch (error) {
       console.error("Error fetching properties:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [executeWithRetry]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      handleFetchProperties(name, address, minPrice, maxPrice);
+      handleFetchProperties(name, address, minPrice, maxPrice, 1);
     }, 500);  
 
     return () => clearTimeout(timeoutId);
@@ -64,6 +94,10 @@ export const useDashboard = () => {
     setMaxPrice(value);
   }, []);
 
+  const handlePageChange = useCallback((page: number) => {
+    handleFetchProperties(name, address, minPrice, maxPrice, page);
+  }, [name, address, minPrice, maxPrice, handleFetchProperties]);
+
   const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     router.push("/");
@@ -74,35 +108,51 @@ export const useDashboard = () => {
     setAddress("");
     setMinPrice("");
     setMaxPrice("");
+    setError(null);
   }, []);
+
+  const handleRetry = useCallback(() => {
+    setError(null);
+    handleFetchProperties(name, address, minPrice, maxPrice, pagination.pageNumber);
+  }, [name, address, minPrice, maxPrice, pagination.pageNumber, handleFetchProperties]);
 
   // Memoize the return object to prevent unnecessary re-renders
   return useMemo(() => ({
     filteredProperties,
+    pagination,
     name,
     address,
     minPrice,
     maxPrice,
     loading,
+    error,
+    isRetrying,
     
     handleName,
     handleAddress,
     handleMinPrice,
     handleMaxPrice,
+    handlePageChange,
     handleLogout,
     handleReset,
+    handleRetry,
   }), [
     filteredProperties,
+    pagination,
     name,
     address,
     minPrice,
     maxPrice,
     loading,
+    error,
+    isRetrying,
     handleName,
     handleAddress,
     handleMinPrice,
     handleMaxPrice,
+    handlePageChange,
     handleLogout,
     handleReset,
+    handleRetry,
   ]);
 };

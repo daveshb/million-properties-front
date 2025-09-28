@@ -14,6 +14,12 @@ jest.mock('../useDashboard', () => ({
         price: 500000,
       }
     ],
+    pagination: {
+      totalCount: 1,
+      pageNumber: 1,
+      pageSize: 9,
+      totalPages: 1
+    },
     name: '',
     address: '',
     minPrice: '',
@@ -23,8 +29,12 @@ jest.mock('../useDashboard', () => ({
     handleAddress: jest.fn(),
     handleMinPrice: jest.fn(),
     handleMaxPrice: jest.fn(),
+    handlePageChange: jest.fn(),
     handleLogout: jest.fn(),
     handleReset: jest.fn(),
+    handleRetry: jest.fn(),
+    error: null,
+    isRetrying: false,
   })
 }))
 

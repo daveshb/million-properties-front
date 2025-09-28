@@ -3,22 +3,29 @@
 import { memo, useMemo } from "react";
 import style from "./dashboard.module.scss";
 import { PropertyCard } from "@/components/propertyCard/PropertyCard";
+import { Pagination } from "@/components/pagination/Pagination";
+import { ErrorAlert } from "@/components/error/ErrorAlert";
 import { useDashboard } from "./useDashboard";
 
 const Dashboard = memo(() => {
   const {
     filteredProperties,
+    pagination,
     name,
     address,
     minPrice,
     maxPrice,
     loading,
+    error,
+    isRetrying,
     handleName,
     handleAddress,
     handleMinPrice,
     handleMaxPrice,
+    handlePageChange,
     handleLogout,
     handleReset,
+    handleRetry,
   } = useDashboard();
 
   // Memoize the properties list to prevent unnecessary re-renders
@@ -119,13 +126,21 @@ const Dashboard = memo(() => {
 
         {loading && (
           <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-            Loading properties...
+            {isRetrying ? 'Reintentando...' : 'Loading properties...'}
           </div>
         )}
         
         <section className={style.grid}>
           {propertiesList}
         </section>
+
+        <Pagination
+          currentPage={pagination.pageNumber}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalCount}
+          itemsPerPage={pagination.pageSize}
+          onPageChange={handlePageChange}
+        />
       </main>
     </div>
   );
