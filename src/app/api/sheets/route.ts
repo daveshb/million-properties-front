@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       currentDate,
       leadData.fullName,
       leadData.email,
-      leadData.tel,
+      leadData.tel.trim(),
       leadData.budget
     ];
 
